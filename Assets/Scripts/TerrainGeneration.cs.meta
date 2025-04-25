@@ -5,7 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - noiseTexture: {instanceID: 0}
-  - tile: {fileID: 6801542990517645594, guid: a589a47153639704aacf4f0cd946b017, type: 3}
+  - terrainTile: {fileID: 6801542990517645594, guid: a589a47153639704aacf4f0cd946b017, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
