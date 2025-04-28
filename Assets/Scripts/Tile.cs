@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    public BlockInfo info;
+    public BaseTile info;
     public float Health;
     public Action<Block> BlockDestroyed;
 

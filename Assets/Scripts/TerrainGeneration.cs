@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TerrainGeneration : MonoBehaviour
 {
@@ -8,7 +9,13 @@ public class TerrainGeneration : MonoBehaviour
     public float seed;
     public Texture2D noiseTexture;
 
-    public GameObject terrainTile;
+    public BaseTile baseTile;
+    private Tilemap Tilemap;
+
+    private void Awake()
+    {
+        Tilemap = GetComponent<Tilemap>();
+    }
 
     private void Start()
     {
@@ -34,7 +41,7 @@ public class TerrainGeneration : MonoBehaviour
                 if (y > worldSize.y * .8f) noiseMult = 0;
                 else if (y > worldSize.y * .7f) noiseMult = 5f;
                 else noiseMult = 1f;
-                    float v = Mathf.Clamp01(Mathf.PerlinNoise((x + seed) * noiseFreq, (y + seed) * noiseFreq) * noiseMult);
+                float v = Mathf.Clamp01(Mathf.PerlinNoise((x + seed) * noiseFreq, (y + seed) * noiseFreq) * noiseMult);
                 noiseTexture.SetPixel(x, y, new Color(v, v, v));
             }
         }
@@ -44,16 +51,14 @@ public class TerrainGeneration : MonoBehaviour
 
     public void GenerateTerrain()
     {
-        foreach(Transform tile in transform) Destroy(tile.gameObject);
+        Tilemap.InsertCells(new Vector3Int(-worldSize.x / 2, -worldSize.y / 2), new Vector3Int(worldSize.x, worldSize.y));
         for (int x = 0; x < noiseTexture.width; x++)
         {
             for (int y = 0; y < noiseTexture.height; y++)
             {
                 if (noiseTexture.GetPixel(x, y).r > noiseLimit)
                 {
-                    GameObject newTile = Instantiate(terrainTile);
-                    newTile.transform.parent = transform;
-                    newTile.transform.position = new Vector2(x + 0.5f - Mathf.Round(worldSize.x/2), y + 0.5f - worldSize.y);
+                    Tilemap.SetTile(new Vector3Int(x, y), baseTile);
                 }
             }
         }

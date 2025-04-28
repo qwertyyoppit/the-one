@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class Tilemap
+public class aaaa : ScriptableObject
 {
+    private ScriptableObject _instance;
+
     
 }
