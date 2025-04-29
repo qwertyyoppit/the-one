@@ -11,12 +11,12 @@ public class TerrainGeneration : MonoBehaviour
     public float seed;
     public Texture2D noiseTexture;
 
-    public TileBase tile;
-    private Tilemap _tilemap;
+    public Block tile;
+    public Block[][] tiles;
 
     private void Awake()
     {
-        _tilemap = GetComponent<Tilemap>();
+        
     }
 
     private void Start()
@@ -24,30 +24,6 @@ public class TerrainGeneration : MonoBehaviour
         RandomizeSeed();
         GenerateNoiseTexture();
         GenerateTerrain();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown("l"))
-        {
-            for (int i = 0; i < 20; i++)
-            {
-                Vector3Int randomPos = new Vector3Int(Random.Range(0, worldSize.x), Random.Range(0, worldSize.y), 0);
-                var curTile = _tilemap.GetTile(randomPos) as BaseTile;
-                while (!curTile)
-                {
-                    randomPos = new Vector3Int(Random.Range(0, worldSize.x), Random.Range(0, worldSize.y), 0);
-                    curTile = _tilemap.GetTile(randomPos) as BaseTile;
-                }
-
-                if (curTile.color == Color.white) curTile.color = Color.red;
-                else if (curTile.color == Color.red) curTile.color = Color.blue;
-                else if (curTile.color == Color.blue) curTile.color = Color.white;
-                Debug.Log(curTile.health);
-
-                curTile.RefreshTile(randomPos, _tilemap);
-            }
-        }
     }
 
     public void RandomizeSeed()
@@ -77,14 +53,22 @@ public class TerrainGeneration : MonoBehaviour
 
     public void GenerateTerrain()
     {
-        _tilemap.InsertCells(new Vector3Int(-worldSize.x / 2, -worldSize.y / 2), new Vector3Int(worldSize.x, worldSize.y));
-        for (var x = 0; x < noiseTexture.width; x++)
+        if (tiles != null)
         {
-            for (var y = 0; y < noiseTexture.height; y++)
+            foreach (var row in tiles)
+            foreach (var curTile in row)
+                Destroy(curTile.gameObject);
+        }
+        tiles = new Array[worldSize.y] as Block[][];
+        for (var y = 0; y < noiseTexture.height; y++)
+        {
+            tiles[y] = new Block[worldSize.x];
+            for (var x = 0; x < noiseTexture.width; x++)
             {
                 if (noiseTexture.GetPixel(x, y).r > noiseLimit)
                 {
-                    _tilemap.SetTile(new Vector3Int(x, y), tile);
+                    var newTile = Instantiate(tile, new Vector3(x, y, 0), Quaternion.identity, transform);
+                    tiles[y][x] = newTile;
                 }
             }
         }

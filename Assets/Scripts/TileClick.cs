@@ -40,9 +40,9 @@ public class TileClick : MonoBehaviour
     {
         if (_digCooldown > 0f) return;
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(_pointAction.ReadValue<Vector2>());
-        var hit = _tilemap.GetTile(new Vector3Int((int)mousePos.x, (int)mousePos.y, 0)) as Tile;
+        var hit = _tilemap.GetTile(new Vector3Int((int)mousePos.x, (int)mousePos.y, 0)) as BaseTile;
         if (!hit) return;
-        
+        hit.Damage(10f);
         _digCooldown = digTime / digSpeed;
     }
 }
