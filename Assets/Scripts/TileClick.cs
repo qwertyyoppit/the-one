@@ -1,30 +1,35 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class TileClick : MonoBehaviour
 {
-    private PlayerInput playerInput;
+    private PlayerInput _playerInput;
 
-    private InputAction clickAction;
-    private InputAction pointAction;
+    private InputAction _clickAction;
+    private InputAction _pointAction;
+    
+    private Tilemap _tilemap;
 
     [SerializeField] private int digSpeed = 2;
-    [SerializeField] readonly private float digTime = 1f;
-    private float digCooldown = 0f;
+    [SerializeField] private float digTime = 1f;
+    private float _digCooldown = 0f;
 
     private void Start()
     {
-        playerInput = GetComponent<PlayerInput>();
+        _playerInput = GetComponent<PlayerInput>();
 
-        clickAction = playerInput.actions["click"];
-        pointAction = playerInput.actions["point"];
+        _clickAction = _playerInput.actions["click"];
+        _pointAction = _playerInput.actions["point"];
+
+        _tilemap = FindAnyObjectByType<Tilemap>();
     }
     private void Update()
     {
-        digCooldown -= Time.deltaTime;
-        digCooldown = Mathf.Max(digCooldown, 0);
+        _digCooldown -= Time.deltaTime;
+        _digCooldown = Mathf.Max(_digCooldown, 0);
 
-        if (clickAction.IsPressed())
+        if (_clickAction.IsPressed())
         {
             Click();
         }
@@ -33,12 +38,11 @@ public class TileClick : MonoBehaviour
 
     private void Click()
     {
-        if (digCooldown > 0f) return;
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(pointAction.ReadValue<Vector2>());
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, default, 1 << 3);
-        if (hit.collider == null) return;
-        if (!hit.transform.TryGetComponent<Block>(out Block blockScript)) return;
-        blockScript.Damage(10f);
-        digCooldown = digTime / digSpeed;
+        if (_digCooldown > 0f) return;
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(_pointAction.ReadValue<Vector2>());
+        var hit = _tilemap.GetTile(new Vector3Int((int)mousePos.x, (int)mousePos.y, 0)) as Tile;
+        if (!hit) return;
+        
+        _digCooldown = digTime / digSpeed;
     }
 }

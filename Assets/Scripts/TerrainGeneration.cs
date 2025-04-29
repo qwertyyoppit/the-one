@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class TerrainGeneration : MonoBehaviour
 {
@@ -9,12 +11,12 @@ public class TerrainGeneration : MonoBehaviour
     public float seed;
     public Texture2D noiseTexture;
 
-    public BaseTile baseTile;
-    private Tilemap Tilemap;
+    public TileBase tile;
+    private Tilemap _tilemap;
 
     private void Awake()
     {
-        Tilemap = GetComponent<Tilemap>();
+        _tilemap = GetComponent<Tilemap>();
     }
 
     private void Start()
@@ -22,6 +24,30 @@ public class TerrainGeneration : MonoBehaviour
         RandomizeSeed();
         GenerateNoiseTexture();
         GenerateTerrain();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown("l"))
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                Vector3Int randomPos = new Vector3Int(Random.Range(0, worldSize.x), Random.Range(0, worldSize.y), 0);
+                var curTile = _tilemap.GetTile(randomPos) as BaseTile;
+                while (!curTile)
+                {
+                    randomPos = new Vector3Int(Random.Range(0, worldSize.x), Random.Range(0, worldSize.y), 0);
+                    curTile = _tilemap.GetTile(randomPos) as BaseTile;
+                }
+
+                if (curTile.color == Color.white) curTile.color = Color.red;
+                else if (curTile.color == Color.red) curTile.color = Color.blue;
+                else if (curTile.color == Color.blue) curTile.color = Color.white;
+                Debug.Log(curTile.health);
+
+                curTile.RefreshTile(randomPos, _tilemap);
+            }
+        }
     }
 
     public void RandomizeSeed()
@@ -32,16 +58,16 @@ public class TerrainGeneration : MonoBehaviour
     public void GenerateNoiseTexture()
     {
         noiseTexture = new Texture2D(worldSize.x, worldSize.y);
-        float noiseMult = 1f;
 
-        for (int x = 0; x < noiseTexture.width; x++)
+        for (var x = 0; x < noiseTexture.width; x++)
         {
-            for (int y = 0; y < noiseTexture.height; y++)
+            for (var y = 0; y < noiseTexture.height; y++)
             {
+                var noiseMult = 1f;
                 if (y > worldSize.y * .8f) noiseMult = 0;
                 else if (y > worldSize.y * .7f) noiseMult = 5f;
                 else noiseMult = 1f;
-                float v = Mathf.Clamp01(Mathf.PerlinNoise((x + seed) * noiseFreq, (y + seed) * noiseFreq) * noiseMult);
+                var v = Mathf.Clamp01(Mathf.PerlinNoise((x + seed) * noiseFreq, (y + seed) * noiseFreq) * noiseMult);
                 noiseTexture.SetPixel(x, y, new Color(v, v, v));
             }
         }
@@ -51,14 +77,14 @@ public class TerrainGeneration : MonoBehaviour
 
     public void GenerateTerrain()
     {
-        Tilemap.InsertCells(new Vector3Int(-worldSize.x / 2, -worldSize.y / 2), new Vector3Int(worldSize.x, worldSize.y));
-        for (int x = 0; x < noiseTexture.width; x++)
+        _tilemap.InsertCells(new Vector3Int(-worldSize.x / 2, -worldSize.y / 2), new Vector3Int(worldSize.x, worldSize.y));
+        for (var x = 0; x < noiseTexture.width; x++)
         {
-            for (int y = 0; y < noiseTexture.height; y++)
+            for (var y = 0; y < noiseTexture.height; y++)
             {
                 if (noiseTexture.GetPixel(x, y).r > noiseLimit)
                 {
-                    Tilemap.SetTile(new Vector3Int(x, y), baseTile);
+                    _tilemap.SetTile(new Vector3Int(x, y), tile);
                 }
             }
         }

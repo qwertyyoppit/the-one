@@ -4,19 +4,19 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     public BaseTile info;
-    public float Health;
-    public Action<Block> BlockDestroyed;
+    public float health;
+    public Action<Block> BlockDestroyed = delegate { };
 
     private void Awake()
     {
-        Health = info.Health;
+        health = info.health;
     }
 
     public void Damage(float damage)
     {
-        Health -= damage;
+        health -= damage;
 
-        if (Health <= 0)
+        if (health <= 0)
         {
             DestroyBlock();
         }

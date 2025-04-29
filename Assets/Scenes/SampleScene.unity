@@ -169,7 +169,7 @@ MonoBehaviour:
   noiseLimit: 0.5
   seed: 0
   noiseTexture: {fileID: 0}
-  baseTile: {fileID: 11400000, guid: 169dd0b6f0c8bdf469f28025fe2bc010, type: 2}
+  tile: {fileID: 0}
 --- !u!483693784 &262140748
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -1077,6 +1077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   digSpeed: 2
+  digTime: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
