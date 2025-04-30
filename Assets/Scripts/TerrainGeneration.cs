@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -12,14 +13,9 @@ public class TerrainGeneration : MonoBehaviour
     public Texture2D noiseTexture;
 
     public Block tile;
-    public Block[][] tiles;
+    private Block[][] _tiles;
 
     private void Awake()
-    {
-        
-    }
-
-    private void Start()
     {
         RandomizeSeed();
         GenerateNoiseTexture();
@@ -53,24 +49,25 @@ public class TerrainGeneration : MonoBehaviour
 
     public void GenerateTerrain()
     {
-        if (tiles != null)
+        if (_tiles != null)
         {
-            foreach (var row in tiles)
+            foreach (var row in _tiles)
             foreach (var curTile in row)
                 Destroy(curTile.gameObject);
         }
-        tiles = new Array[worldSize.y] as Block[][];
-        for (var y = 0; y < noiseTexture.height; y++)
+        _tiles = new Array[worldSize.y] as Block[][];
+        var tempTiles = new List<Block[]>();
+        for (var y = 0; y < worldSize.y; y++)
         {
-            tiles[y] = new Block[worldSize.x];
-            for (var x = 0; x < noiseTexture.width; x++)
+            tempTiles.Add(new Block[worldSize.x]);
+            for (var x = 0; x < worldSize.x; x++)
             {
-                if (noiseTexture.GetPixel(x, y).r > noiseLimit)
-                {
-                    var newTile = Instantiate(tile, new Vector3(x, y, 0), Quaternion.identity, transform);
-                    tiles[y][x] = newTile;
-                }
+                if (!(noiseTexture.GetPixel(x, y).r > noiseLimit)) continue;
+                var newTile = Instantiate<Block>(tile, new Vector3(x, y, 0), Quaternion.identity, transform);
+                tempTiles[y][x] = newTile;
             }
         }
+
+        _tiles = tempTiles.ToArray();
     }
 }

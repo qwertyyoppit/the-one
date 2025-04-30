@@ -1,10 +1,22 @@
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TileData
+public class TileData : MonoBehaviour, IDamageable
 {
-    public readonly TileBase BaseTile;
-    public int ID = 0;
-    public float Health = 10;
-    public int Strength = 0;
+    [NonSerialized] public readonly BaseTile baseTile;
+    [NonSerialized] public int ID = 0;
+    [NonSerialized] public float Health = 10;
+    [NonSerialized] public int Strength = 0;
+
+    public void Damage(float damage)
+    {
+        Health -= damage;
+
+        if (Health <= 0)
+        {
+            Destroy(gameObject);
+            baseTile.DestroyTile();
+        }
+    }
 }

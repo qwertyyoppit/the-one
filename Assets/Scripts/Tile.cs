@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Block : MonoBehaviour
+public class Block : MonoBehaviour, IDamageable
 {
     public BaseTile info;
     public float health;
@@ -9,7 +9,7 @@ public class Block : MonoBehaviour
 
     private void Awake()
     {
-        health = info.health;
+        health = info.maxHealth;
     }
 
     public void Damage(float damage)
