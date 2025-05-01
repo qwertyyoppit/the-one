@@ -7,9 +7,15 @@ public class Block : MonoBehaviour, IDamageable
     public float health;
     public Action<Block> BlockDestroyed = delegate { };
 
+    public Block()
+    {
+        health = info.MaxHealth;
+    }
+
     private void Awake()
     {
-        health = info.maxHealth;
+        health = info.MaxHealth;
+        GetComponent<SpriteRenderer>().forceRenderingOff = true;
     }
 
     public void Damage(float damage)

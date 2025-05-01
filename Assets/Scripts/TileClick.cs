@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
 
 public class TileClick : MonoBehaviour
 {
@@ -8,8 +7,6 @@ public class TileClick : MonoBehaviour
 
     private InputAction _clickAction;
     private InputAction _pointAction;
-    
-    private Tilemap _tilemap;
 
     [SerializeField] private int digSpeed = 2;
     [SerializeField] private float digTime = 1f;
@@ -21,8 +18,6 @@ public class TileClick : MonoBehaviour
 
         _clickAction = _playerInput.actions["click"];
         _pointAction = _playerInput.actions["point"];
-
-        _tilemap = FindAnyObjectByType<Tilemap>();
     }
     private void Update()
     {
@@ -39,10 +34,10 @@ public class TileClick : MonoBehaviour
     private void Click()
     {
         if (_digCooldown > 0f) return;
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(_pointAction.ReadValue<Vector2>());
-        var hit = _tilemap.GetTile(new Vector3Int((int)mousePos.x, (int)mousePos.y, 0)) as BaseTile;
-        if (!hit) return;
-        hit.Damage(10f);
         _digCooldown = digTime / digSpeed;
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(_pointAction.ReadValue<Vector2>());
+        var hit = Physics2D.Raycast(mousePos, Vector2.zero);
+        if (!hit) return;
+        hit.collider.GetComponent<Block>().Damage(10f);
     }
 }

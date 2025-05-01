@@ -16,7 +16,6 @@ public class TileData : MonoBehaviour, IDamageable
         if (Health <= 0)
         {
             Destroy(gameObject);
-            baseTile.DestroyTile();
         }
     }
 }
