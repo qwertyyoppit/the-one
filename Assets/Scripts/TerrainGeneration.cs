@@ -12,7 +12,7 @@ public class TerrainGeneration : MonoBehaviour
     public float seed;
     public Texture2D noiseTexture;
 
-    public Block tile;
+    public BaseTile tile;
     private Block[][] _tiles;
 
     private void Awake()
@@ -49,25 +49,43 @@ public class TerrainGeneration : MonoBehaviour
 
     public void GenerateTerrain()
     {
-        if (_tiles != null)
-        {
-            foreach (var row in _tiles)
-            foreach (var curTile in row)
-                Destroy(curTile.gameObject);
-        }
-        _tiles = new Array[worldSize.y] as Block[][];
-        var tempTiles = new List<Block[]>();
+        var tempTiles = new List<BaseTile[]>();
         for (var y = 0; y < worldSize.y; y++)
         {
-            tempTiles.Add(new Block[worldSize.x]);
+            tempTiles.Add(new BaseTile[worldSize.x]);
             for (var x = 0; x < worldSize.x; x++)
             {
                 if (!(noiseTexture.GetPixel(x, y).r > noiseLimit)) continue;
-                var newTile = Instantiate<Block>(tile, new Vector3(x, y, 0), Quaternion.identity, transform);
+                var newTile = tile;
                 tempTiles[y][x] = newTile;
             }
         }
 
-        _tiles = tempTiles.ToArray();
+        SaveWorld.Save(worldSize, tempTiles.ToArray());
+    }
+
+    public void LoadWorld(BaseTile[][] savedWorld)
+    {
+        if (_tiles != null)
+        {
+            foreach (var row in _tiles)
+                foreach (var curTile in row)
+                    Destroy(curTile.gameObject);
+        }
+        _tiles = new Array[worldSize.y] as Block[][];
+        var ok = new List<Block[]>();
+        var tempTiles = SaveWorld.GetWorld();
+        for (var y = 0; y < worldSize.y; y++)
+        {
+            ok[y] = (new Block[worldSize.x]);
+            for (var x = 0; x < worldSize.x; x++)
+            {
+                var newTile = tempTiles[y][x].CreateBlock();
+                newTile.transform.SetPositionAndRotation(new Vector3(x, y, 0), Quaternion.identity);
+                newTile.transform.SetParent(transform);
+                ok[y][x] = newTile;
+            }
+        }
+        _tiles = ok.ToArray();
     }
 }

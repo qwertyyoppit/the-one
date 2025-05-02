@@ -1,27 +1,37 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEditor.TerrainTools;
 using UnityEngine;
 
 public class SaveWorld
 {
+    private static string Path => Application.persistentDataPath;
+    
     public static List<string> worldAttributes = new ()
     {
         "worldSize",
     };
 
-    public void Save(Vector2Int size, Block[][] tiles)
+    public static void Save(Vector2Int size, BaseTile[][] tiles)
     {
-        string data = "";
-        data += "worldSize: " + size.x + "x" + size.y + "\n";
-        data += "tiles: \n";
-        foreach (Block[] column in tiles)
+        var data = "";
+        data += "worldSize: \"" + size.x + "x" + size.y + "\"\n";
+        data += "tiles: \n\"";
+        foreach (var column in tiles)
         {
-            foreach (Block tile in column)
-            {
-                data += tile.info.TileId + ", ";
-            }
+            data = column.Aggregate(data, (current, tile) => current + (tile + ", "));
 
-            data += "\n";
+            data += "\"\n";
         }
+
+        var worldSave = JsonUtility.ToJson(tiles);
+        File.WriteAllText(Path+"world/worldSave.wld", data);
+    }
+
+    public static BaseTile[][] GetWorld()
+    {
+        return JsonUtility.FromJson<BaseTile[][]>(Path+"world/worldSave.wld");
     }
 }

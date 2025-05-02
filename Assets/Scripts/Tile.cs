@@ -3,18 +3,20 @@ using UnityEngine;
 
 public class Block : MonoBehaviour, IDamageable
 {
-    public BaseTile info;
+    public BaseTile baseInfo;
+    public BaseTile Info;
     public float health;
     public Action<Block> BlockDestroyed = delegate { };
 
     public Block()
     {
-        health = info.MaxHealth;
+        Info = ScriptableObject.CreateInstance(baseInfo.GetType()) as BaseTile;
+        health = baseInfo.MaxHealth;
     }
 
     private void Awake()
     {
-        health = info.MaxHealth;
+        health = baseInfo.MaxHealth;
         GetComponent<SpriteRenderer>().forceRenderingOff = true;
     }
 
