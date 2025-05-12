@@ -20,6 +20,7 @@ public class TerrainGeneration : MonoBehaviour
         RandomizeSeed();
         GenerateNoiseTexture();
         GenerateTerrain();
+        SaveWorld.GetWorld();
     }
 
     public void RandomizeSeed()
@@ -49,43 +50,43 @@ public class TerrainGeneration : MonoBehaviour
 
     public void GenerateTerrain()
     {
-        var tempTiles = new List<BaseTile[]>();
+        var tempTiles = new List<string[]>();
         for (var y = 0; y < worldSize.y; y++)
         {
-            tempTiles.Add(new BaseTile[worldSize.x]);
+            tempTiles.Add(new string[worldSize.x]);
             for (var x = 0; x < worldSize.x; x++)
             {
                 if (!(noiseTexture.GetPixel(x, y).r > noiseLimit)) continue;
-                var newTile = tile;
+                var newTile = tile.TileId;
                 tempTiles[y][x] = newTile;
             }
         }
 
         SaveWorld.Save(worldSize, tempTiles.ToArray());
     }
-
-    public void LoadWorld(BaseTile[][] savedWorld)
-    {
-        if (_tiles != null)
-        {
-            foreach (var row in _tiles)
-                foreach (var curTile in row)
-                    Destroy(curTile.gameObject);
-        }
-        _tiles = new Array[worldSize.y] as Block[][];
-        var ok = new List<Block[]>();
-        var tempTiles = SaveWorld.GetWorld();
-        for (var y = 0; y < worldSize.y; y++)
-        {
-            ok[y] = (new Block[worldSize.x]);
-            for (var x = 0; x < worldSize.x; x++)
-            {
-                var newTile = tempTiles[y][x].CreateBlock();
-                newTile.transform.SetPositionAndRotation(new Vector3(x, y, 0), Quaternion.identity);
-                newTile.transform.SetParent(transform);
-                ok[y][x] = newTile;
-            }
-        }
-        _tiles = ok.ToArray();
-    }
+    //
+    // public void LoadWorld(BaseTile[][] savedWorld)
+    // {
+    //     if (_tiles != null)
+    //     {
+    //         foreach (var row in _tiles)
+    //             foreach (var curTile in row)
+    //                 Destroy(curTile.gameObject);
+    //     }
+    //     _tiles = new Array[worldSize.y] as Block[][];
+    //     var ok = new List<Block[]>();
+    //     var tempTiles = ok.ToArray();
+    //     for (var y = 0; y < worldSize.y; y++)
+    //     {
+    //         ok[y] = (new Block[worldSize.x]);
+    //         for (var x = 0; x < worldSize.x; x++)
+    //         {
+    //             
+    //             newTile.transform.SetPositionAndRotation(new Vector3(x, y, 0), Quaternion.identity);
+    //             newTile.transform.SetParent(transform);
+    //             ok[y][x] = newTile;
+    //         }
+    //     }
+    //     _tiles = ok.ToArray();
+    // }
 }

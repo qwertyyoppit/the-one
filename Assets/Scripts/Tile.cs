@@ -1,38 +1,28 @@
 using System;
 using UnityEngine;
+using Clicking.Clicking;
 
-public class Block : MonoBehaviour, IDamageable
+namespace Tiles.Tiles
+{
+public class Block : MonoBehaviour
 {
     public BaseTile baseInfo;
     public BaseTile Info;
     public float health;
     public Action<Block> BlockDestroyed = delegate { };
 
-    public Block()
+    private void Start()
     {
-        Info = ScriptableObject.CreateInstance(baseInfo.GetType()) as BaseTile;
-        health = baseInfo.MaxHealth;
-    }
+        ClickingSystem.ClickedAction += OnClick;
+        return;
 
-    private void Awake()
-    {
-        health = baseInfo.MaxHealth;
-        GetComponent<SpriteRenderer>().forceRenderingOff = true;
-    }
-
-    public void Damage(float damage)
-    {
-        health -= damage;
-
-        if (health <= 0)
+        void OnClick(GameObject arg1, ClickingComponent arg2)
         {
-            DestroyBlock();
+            if (arg1.TryGetComponent<Block>(out var block))
+            {
+                TileSystem.DamageTile(block, 10f);
+            }
         }
     }
-
-    public void DestroyBlock()
-    {
-        BlockDestroyed?.Invoke(this);
-        Destroy(gameObject);
-    }
+}
 }
