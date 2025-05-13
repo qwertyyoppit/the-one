@@ -10,7 +10,7 @@ public abstract class ClickingSystem
 
     public static void TryClick(ClickingComponent clicker)
     {
-        var clickedOn = clicker.PointAction.ReadValue<Vector2>();
+        var clickedOn = clicker.pointAction.ReadValue<Vector2>();
         var clickHit = Physics2D.Raycast(clickedOn, Vector2.zero);
         if (!clickHit) return;
         

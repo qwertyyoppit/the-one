@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -30,7 +31,6 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         box = GetComponent<BoxCollider2D>();
-        Stats = GetComponent<Entity>().Stats;
         playerInput = GetComponent<PlayerInput>();
 
         moveAction = playerInput.actions["move"];
@@ -41,6 +41,11 @@ public class Movement : MonoBehaviour
 
         grounded.enabled += _ => jumping.Active = false;
         jumping.enabled += _ => grounded.Active = false;
+    }
+
+    private void Start()
+    {
+        Stats = GetComponent<Entity>().Stats;
     }
 
     private void Update()

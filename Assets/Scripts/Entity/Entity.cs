@@ -1,7 +1,13 @@
+using System;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    public readonly int Uid;
-    public MonoBehaviour Comp;
+    public StatSet BaseStats;
+    public Stats Stats;
+
+    private void Awake()
+    {
+        Stats = new Stats(BaseStats);
+    }
 }

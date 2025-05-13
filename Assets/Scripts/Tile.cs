@@ -6,13 +6,14 @@ namespace Tiles.Tiles
 {
 public class Block : MonoBehaviour
 {
-    public BaseTile baseInfo;
     public BaseTile Info;
     public float health;
     public Action<Block> BlockDestroyed = delegate { };
 
     private void Start()
     {
+        health = Info.MaxHealth;
+        
         ClickingSystem.ClickedAction += OnClick;
         return;
 
