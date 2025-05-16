@@ -1,9 +1,16 @@
-using UnityEngine;
+using System;
+using Components.Tiles;
+using Object = UnityEngine.Object;
 
-namespace Tiles.Tiles
+namespace Systems.Tiles
 {
-public abstract class TileSystem
+public abstract class TileSystem : SystemBase
 {
+    private void Awake()
+    {
+        throw new NotImplementedException();
+    }
+
     public static void DamageTile(Block tile, float damage)
     {
         tile.health -= damage;

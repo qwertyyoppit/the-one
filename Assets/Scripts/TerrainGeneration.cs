@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Tiles.Tiles;
+using Components.Tiles;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
