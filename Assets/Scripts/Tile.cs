@@ -1,10 +1,8 @@
 using System;
 using UnityEngine;
-using Systems.Clicking;
-using Components.Clicking;
-using Systems.Tiles;
+using Clicking.Clicking;
 
-namespace Components.Tiles
+namespace Tiles.Tiles
 {
 public class Block : MonoBehaviour
 {

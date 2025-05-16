@@ -1,4 +1,4 @@
-using Components.Tiles;
+using Tiles.Tiles;
 using UnityEngine;
 
 public class Tilemap : MonoBehaviour
