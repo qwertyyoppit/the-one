@@ -1,7 +1,5 @@
 using System;
-using Tiles.Tiles;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 [Serializable]
 public class BaseTile

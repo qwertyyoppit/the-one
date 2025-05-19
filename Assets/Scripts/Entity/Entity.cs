@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Entity : MonoBehaviour
+public class Entity : MonoBehaviour, ICantBelieveItsNotButter
 {
     public StatSet BaseStats;
     public Stats Stats;
