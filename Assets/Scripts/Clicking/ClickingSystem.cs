@@ -1,10 +1,12 @@
 using System;
+using Systems;
 using UnityEngine;
+using Clicking.Components;
 
-namespace Clicking.Clicking
+namespace Clicking.Systems
 {
     
-public abstract class ClickingSystem
+public abstract class ClickingSystem : SystemBase<ClickingSystem>
 {
     public static Action<GameObject, ClickingComponent> ClickedAction = delegate { };
 

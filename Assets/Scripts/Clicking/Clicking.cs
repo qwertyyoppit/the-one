@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Clicking.Clicking
+namespace Clicking.Components
 {
 public class ClickingComponent : MonoBehaviour
 {
@@ -19,18 +19,12 @@ public class ClickingComponent : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
 
         clickAction = _playerInput.actions["click"];
-        clickAction.started += _ => ClickingSystem.TryClick(this);
         pointAction = _playerInput.actions["point"];
     }
     private void Update()
     {
         _digCooldown -= Time.deltaTime;
         _digCooldown = Mathf.Max(_digCooldown, 0);
-
-        if (clickAction.IsPressed())
-        {
-            ClickingSystem.TryClick(this);
-        }
     }
 }
 }
